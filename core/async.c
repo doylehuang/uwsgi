@@ -329,27 +329,35 @@ static int async_wait_fd_write(int fd, int timeout) {
 }
 
 void async_schedule_to_req(void) {
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 #ifdef UWSGI_ROUTING
+		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
         if (uwsgi_apply_routes(uwsgi.wsgi_req) == UWSGI_ROUTE_BREAK) {
 		goto end;
         }
 	// a trick to avoid calling routes again
 	uwsgi.wsgi_req->is_routing = 1;
 #endif
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi.wsgi_req->async_status = uwsgi.p[uwsgi.wsgi_req->uh->modifier1]->request(uwsgi.wsgi_req);
         if (uwsgi.wsgi_req->async_status <= UWSGI_OK) goto end;
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	if (uwsgi.schedule_to_main) {
         	uwsgi.schedule_to_main(uwsgi.wsgi_req);
 	}
 	return;
 
 end:
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	async_reset_request(uwsgi.wsgi_req);
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi_close_request(uwsgi.wsgi_req);
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi.wsgi_req->async_status = UWSGI_OK;	
 	uwsgi.async_queue_unused_ptr++;
         uwsgi.async_queue_unused[uwsgi.async_queue_unused_ptr] = uwsgi.wsgi_req;
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 }
 
 void async_schedule_to_req_green(void) {
