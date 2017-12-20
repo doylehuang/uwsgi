@@ -1,4 +1,7 @@
 #include "uwsgi.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 
 extern struct uwsgi_server uwsgi;
 
@@ -251,6 +254,7 @@ int uwsgi_response_write_headers_do(struct wsgi_request *wsgi_req) {
 			wsgi_req->write_errors++;
 			return -1;
 		}
+		usleep(100000);
         }
 
         wsgi_req->headers_size += wsgi_req->write_pos;
