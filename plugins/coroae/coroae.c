@@ -190,6 +190,7 @@ request:
         }
 
 end:
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi_close_request(wsgi_req);
         free_req_queue;
 	XSRETURN(0);

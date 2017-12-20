@@ -102,6 +102,7 @@ static VALUE uwsgi_rb_thread_core(void *arg) {
                         uwsgi_destroy_request(wsgi_req);
                         continue;
                 }
+				uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
                 uwsgi_close_request(wsgi_req);
         }

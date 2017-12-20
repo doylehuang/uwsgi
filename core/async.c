@@ -387,6 +387,7 @@ end:
 	// re-set the global state
 	uwsgi.wsgi_req = wsgi_req;
         async_reset_request(wsgi_req);
+		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
         uwsgi_close_request(wsgi_req);
 	// re-set the global state (routing could have changed it)
 	uwsgi.wsgi_req = wsgi_req;

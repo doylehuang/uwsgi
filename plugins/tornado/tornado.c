@@ -181,6 +181,7 @@ PyObject *py_uwsgi_tornado_request(PyObject *self, PyObject *args) {
 
 end:
 	uwsgi.async_proto_fd_table[wsgi_req->fd] = NULL;
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi_close_request(uwsgi.wsgi_req);	
 	free_req_queue;
 again:
