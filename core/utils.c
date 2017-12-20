@@ -1055,6 +1055,7 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 	int tmp_id;
 	uint64_t tmp_rt, rss = 0, vsz = 0;
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	// apply transformations
 	if (wsgi_req->transformations) {
 		if (uwsgi_apply_final_transformations(wsgi_req) == 0) {
@@ -1065,6 +1066,7 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 		uwsgi_free_transformations(wsgi_req);
 	}
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	// check if headers should be sent
 	if (wsgi_req->headers) {
 		if (!wsgi_req->headers_sent && !wsgi_req->headers_size && !wsgi_req->response_size) {
@@ -1075,7 +1077,7 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 
 	uint64_t end_of_request = uwsgi_micros();
 	wsgi_req->end_of_request = end_of_request;
-
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	if (!wsgi_req->do_not_account_avg_rt) {
 		tmp_rt = wsgi_req->end_of_request - wsgi_req->start_of_request;
 		uwsgi.workers[uwsgi.mywid].running_time += tmp_rt;
@@ -1089,6 +1091,7 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 		uwsgi.workers[uwsgi.mywid].rss_size = rss;
 	}
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	if (!wsgi_req->do_not_account) {
 		uwsgi.workers[0].requests++;
 		uwsgi.workers[uwsgi.mywid].requests++;
@@ -1104,10 +1107,12 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 	uwsgi_apply_final_routes(wsgi_req);
 #endif
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	// close socket and free parsers-allocated memory
 	close_and_free_request(wsgi_req);
 
 	// after_request hook
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	if (!wsgi_req->is_raw && uwsgi.p[wsgi_req->uh->modifier1]->after_request)
 		uwsgi.p[wsgi_req->uh->modifier1]->after_request(wsgi_req);
 
@@ -1117,12 +1122,14 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 		void (*func) (struct wsgi_request *) = (void (*)(struct wsgi_request *)) usl->custom_ptr;
 		func(wsgi_req);
 	}
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 	if (uwsgi.threads > 1) {
 		// now the thread can die...
 		pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, &tmp_id);
 	}
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	// leave harakiri mode
 	if (uwsgi.workers[uwsgi.mywid].harakiri > 0) {
 		set_harakiri(0);
@@ -1143,10 +1150,13 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 		}
 	}
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
+
 	// defunct process reaper
 	if (uwsgi.reaper == 1) {
 		while (waitpid(WAIT_ANY, &waitpid_status, WNOHANG) > 0) {usleep(100000);};
 	}
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 	// free logvars
 	struct uwsgi_logvar *lv = wsgi_req->logvars;
@@ -1155,7 +1165,8 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 		lv = lv->next;
 		free(ptr);
 	}
-
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
+	int count = 0;
 	// free additional headers
 	struct uwsgi_string_list *ah = wsgi_req->additional_headers;
 	while (ah) {
@@ -1163,7 +1174,10 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 		ah = ah->next;
 		free(ptr->value);
 		free(ptr);
+		uwsgi_log("==> Doyle== %s, %d, %d\n", __FUNCTION__, __LINE__, count);
+		count+=1;
 	}
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	// free remove headers
 	ah = wsgi_req->remove_headers;
 	while (ah) {
@@ -1186,6 +1200,7 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 		uwsgi_buffer_destroy(wsgi_req->websocket_send_buf);
 	}
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 	// reset request
 	wsgi_req->uh->pktsize = 0;
@@ -1228,6 +1243,8 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 	}
 #endif
 #endif
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
+
 
 }
 
