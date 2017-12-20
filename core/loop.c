@@ -134,19 +134,24 @@ void *simple_loop_run(void *arg1) {
 
 	// ok we are ready, let's start managing requests and signals
 	while (uwsgi.workers[uwsgi.mywid].manage_next_request) {
-
+		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 		wsgi_req_setup(wsgi_req, core_id, NULL);
+		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 		if (wsgi_req_accept(main_queue, wsgi_req)) {
+			uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 			continue;
 		}
+		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 		if (wsgi_req_recv(main_queue, wsgi_req)) {
 			uwsgi_destroy_request(wsgi_req);
+			uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 			continue;
 		}
 		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 		uwsgi_close_request(wsgi_req);
+		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	}
 
 	// end of the loop
