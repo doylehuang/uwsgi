@@ -306,6 +306,7 @@ request:
 		goto end;
 	}
 #endif
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 	for(;;) {
 		if (uwsgi.p[wsgi_req->uh->modifier1]->request(wsgi_req) <= UWSGI_OK) {
@@ -315,6 +316,7 @@ request:
 		// switch after each yield
 		GEVENT_SWITCH;
 	}
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 end:
 	if (greenlet_switch) {
@@ -322,7 +324,7 @@ end:
 	}
 end2:
 	Py_DECREF(current_greenlet);
-
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi_close_request(wsgi_req);
 	free_req_queue;
 

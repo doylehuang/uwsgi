@@ -116,6 +116,7 @@ error:
 
 static PyObject *py_uwsgi_asyncio_request(PyObject *self, PyObject *args) {
         long wsgi_req_ptr = 0;
+		uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	int timed_out = 0;
         if (!PyArg_ParseTuple(args, "l|i:uwsgi_asyncio_request", &wsgi_req_ptr, &timed_out)) {
 		uwsgi_log_verbose("[BUG] invalid arguments for asyncio callback !!!\n");
@@ -124,6 +125,8 @@ static PyObject *py_uwsgi_asyncio_request(PyObject *self, PyObject *args) {
 
         struct wsgi_request *wsgi_req = (struct wsgi_request *) wsgi_req_ptr;
 	uwsgi.wsgi_req = wsgi_req;
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
+
 
 	PyObject *ob_timeout = (PyObject *) wsgi_req->async_timeout;
 	if (PyObject_CallMethod(ob_timeout, "cancel", NULL) == NULL) PyErr_Print();
@@ -135,6 +138,8 @@ static PyObject *py_uwsgi_asyncio_request(PyObject *self, PyObject *args) {
 		if (PyObject_CallMethod(uasyncio.loop, "remove_reader", "i", wsgi_req->fd) == NULL) PyErr_Print();
 		goto end;
 	}
+
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 	int status = wsgi_req->socket->proto(wsgi_req);
 	if (status > 0) {
@@ -148,10 +153,13 @@ static PyObject *py_uwsgi_asyncio_request(PyObject *self, PyObject *args) {
 		goto again;
 	}
 
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
+
 	if (PyObject_CallMethod(uasyncio.loop, "remove_reader", "i", wsgi_req->fd) == NULL) {
 		PyErr_Print();
 		goto end;
 	}
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 	if (status == 0) {
 		// we call this two time... overengineering :(
@@ -159,10 +167,14 @@ static PyObject *py_uwsgi_asyncio_request(PyObject *self, PyObject *args) {
 		uwsgi.schedule_to_req();
 		goto again;
 	}
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
 end:
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi.async_proto_fd_table[wsgi_req->fd] = NULL;
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	uwsgi_close_request(uwsgi.wsgi_req);	
+	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 	free_req_queue;
 again:
 	Py_INCREF(Py_None);
