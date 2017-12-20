@@ -2008,6 +2008,7 @@ int uwsgi_init(int argc, char *argv[], char *envp[]) {
 #else
 int main(int argc, char *argv[], char *envp[]) {
 #endif
+	uwsgi_log("Doyle==== %s %d\n", __FUNCTION__, __LINE__);
 	uwsgi_setup(argc, argv, envp);
 	return uwsgi_run();
 }
