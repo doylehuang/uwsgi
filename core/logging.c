@@ -17,6 +17,9 @@
 #ifdef __DragonFly__
 #include <uwsgi.h>
 #endif
+#include <stdio.h>
+#include <stdlib.h>
+
 
 extern struct uwsgi_server uwsgi;
 
@@ -1533,6 +1536,7 @@ static void *logger_thread_loop(void *noarg) {
                         }
 
                 }
+				usleep(100000);
         }
 
         return NULL;

@@ -1428,6 +1428,7 @@ int wsgi_req_recv(int queue, struct wsgi_request *wsgi_req) {
 				ret = uwsgi_wait_read_req(wsgi_req);
 				if (ret <= 0)
 					return -1;
+				usleep(100000);
 				continue;
 			}
 			return -1;
@@ -3905,6 +3906,7 @@ int uwsgi_kvlist_parse(char *src, size_t len, char list_separator, char kv_separ
 					if (!strcmp(p, base)) {
 						*pp = uwsgi_str(usl->value + i + 1);
 					}
+					usleep(100000);
 				}
 				va_end(ap);
 				base = ptr;

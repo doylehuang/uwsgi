@@ -1,4 +1,7 @@
 #include "uwsgi.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 
 extern struct uwsgi_server uwsgi;
 
@@ -757,6 +760,7 @@ ssize_t uwsgi_pipe(int src, int dst, int timeout) {
 	ssize_t len;
 
 	for (;;) {
+		usleep(100000);
 		int ret = uwsgi_waitfd(src, timeout);
 		if (ret > 0) {
 			len = read(src, buf, 8192);
