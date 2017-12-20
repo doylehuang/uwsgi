@@ -1,4 +1,7 @@
 #include <uwsgi.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 
 
 extern struct uwsgi_server uwsgi;
@@ -1151,7 +1154,7 @@ void uwsgi_close_request(struct wsgi_request *wsgi_req) {
 
 	// defunct process reaper
 	if (uwsgi.reaper == 1) {
-		while (waitpid(WAIT_ANY, &waitpid_status, WNOHANG) > 0);
+		while (waitpid(WAIT_ANY, &waitpid_status, WNOHANG) > 0) {usleep(100000);};
 	}
 	uwsgi_log("==> Doyle== %s, %d\n", __FUNCTION__, __LINE__);
 
